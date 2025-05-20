@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-snake me-2"></i>SnakeCage 🐍🧪</h3>
+            </div>
+            <div class="card-body">
+                <p class="lead mb-4">
+                    Submit your Python code for secure analysis. SnakeCage will execute the code in an isolated environment
+                    and provide a detailed report of its behavior, resource usage, and potential security risks.
+                </p>
+                
+                <form action="{{ url_for('submit_code') }}" method="post" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="code-editor" class="form-label">Python Code</label>
+                        <textarea id="code-editor" name="code" class="form-control code-editor" rows="12" placeholder="Paste your Python code here..." required></textarea>
+                        <div class="invalid-feedback">
+                            Please provide some Python code to analyze.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="timeout" class="form-label">Execution Timeout (seconds)</label>
+                        <input type="number" id="timeout" name="timeout" class="form-control" value="30" min="1" max="120" required>
+                        <div class="form-text">
+                            Maximum time allowed for code execution (1-120 seconds).
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sampleCodeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-code me-1"></i> Sample Code
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="sampleCodeDropdown">
+                                    <li><button type="button" class="dropdown-item sample-code-btn" data-sample="harmless">Harmless Example</button></li>
+                                    <li><button type="button" class="dropdown-item sample-code-btn" data-sample="suspicious">Suspicious Example</button></li>
+                                    <li><button type="button" class="dropdown-item sample-code-btn" data-sample="malicious">Malicious Example</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-1"></i> Run in Sandbox
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-lock text-primary me-2"></i>Isolated Execution</h5>
+                        <p class="card-text">
+                            Code runs in a secure, isolated environment with restricted access to system resources.
+                            Prevents any malicious code from affecting your system.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-chart-line text-success me-2"></i>Comprehensive Monitoring</h5>
+                        <p class="card-text">
+                            Tracks CPU, memory, network activity, and file system operations to identify suspicious behavior patterns.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-file-alt text-warning me-2"></i>Detailed Reports</h5>
+                        <p class="card-text">
+                            Provides comprehensive analysis reports with risk assessment, suspicious activities, and resource usage visualizations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>How SnakeCage Works</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ol class="list-group list-group-numbered mb-4">
+                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Submit Your Code</div>
+                                    Paste your Python code into the editor above and set an execution timeout.
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Secure Execution</div>
+                                    The code is executed in an isolated sandbox environment with restricted privileges.
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Comprehensive Monitoring</div>
+                                    System resources, network activity, and file operations are monitored during execution.
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Analysis and Reporting</div>
+                                    Results are analyzed for suspicious patterns and presented in a detailed report.
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-warning">
+                            <h5><i class="fas fa-exclamation-triangle me-2"></i>Important Notice</h5>
+                            <p class="mb-0">
+                                This sandbox is for educational and testing purposes only. While it provides isolation,
+                                no security measure is 100% effective. Only analyze code from trusted sources or in a
+                                controlled environment.
+                            </p>
+                        </div>
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-lightbulb me-2"></i>Pro Tip</h5>
+                            <p class="mb-0">
+                                Use the sample code buttons to see how the sandbox detects and reports different types of code behavior.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

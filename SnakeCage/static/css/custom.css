@@ -1,0 +1,119 @@
+/* Custom styles for the Python Malware Sandbox */
+
+/* Activity indicators */
+.severity-high {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+.severity-medium {
+    background-color: var(--bs-warning);
+    color: black;
+}
+
+.severity-low {
+    background-color: var(--bs-info);
+    color: white;
+}
+
+.risk-high {
+    color: var(--bs-danger);
+}
+
+.risk-medium {
+    color: var(--bs-warning);
+}
+
+.risk-low {
+    color: var(--bs-info);
+}
+
+/* Code editor styling */
+.code-editor {
+    font-family: monospace;
+    min-height: 300px;
+}
+
+/* Results section styling */
+.results-section {
+    margin-bottom: 2rem;
+}
+
+/* Timeline styling */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 2rem;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+    border-left: 2px solid var(--bs-secondary);
+    padding-left: 20px;
+}
+
+.timeline-item:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bs-primary);
+}
+
+/* Chart containers */
+.chart-container {
+    height: 250px;
+    margin-bottom: 1.5rem;
+}
+
+/* Dashboard cards */
+.metric-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--bs-primary);
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.metric-card.cpu {
+    border-left-color: var(--bs-danger);
+}
+
+.metric-card.memory {
+    border-left-color: var(--bs-warning);
+}
+
+.metric-card.network {
+    border-left-color: var(--bs-info);
+}
+
+.metric-card.filesystem {
+    border-left-color: var(--bs-success);
+}
+
+/* Pre-formatted output */
+pre.output-box {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+/* Activity badges */
+.activity-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
