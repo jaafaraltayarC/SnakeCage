@@ -67,9 +67,14 @@ For additional security, consider running the sandbox in a virtual machine or co
 
 ## 📊 Screenshots
 
-- Homepage with code input
-- Analysis results with charts
-- History page for past executions
+![image](https://github.com/user-attachments/assets/8d44f598-be8b-4934-b5e0-84069dcee435)
+
+![image](https://github.com/user-attachments/assets/081a70ba-e665-4d28-b07a-430758b1f26b)
+![image](https://github.com/user-attachments/assets/43ab5254-c5a3-4194-a5ab-bf2e5ca770c0)
+![image](https://github.com/user-attachments/assets/c7e8a691-c200-4c4a-8bd4-b3f25819d6c0)
+![image](https://github.com/user-attachments/assets/f9c2025b-488e-4ffb-9910-d3e445e2340c)
+![image](https://github.com/user-attachments/assets/d2eec851-9803-480e-b551-699f77bd788f)
+
 
 ## ⚠️ Disclaimer
 
