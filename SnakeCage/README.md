@@ -66,10 +66,18 @@ This sandbox implements several isolation techniques:
 For additional security, consider running the sandbox in a virtual machine or container.
 
 ## 📊 Screenshots
+![1](https://github.com/user-attachments/assets/fd7a93c8-2d76-41d3-acf5-ff32bfab7541)
+![2](https://github.com/user-attachments/assets/37caa0db-0148-4c96-8c56-e00940f79679)
+![3](https://github.com/user-attachments/assets/5f2b85c2-2013-4bd7-87e8-1bc835b8fbd2)
+![4](https://github.com/user-attachments/assets/520d4d94-b964-4a5f-8289-d9f08374755b)
+![5](https://github.com/user-attachments/assets/a9ba9744-ad05-406f-963b-b9e141bc8877)
+![6](https://github.com/user-attachments/assets/28d274f1-2d01-4e64-b3fa-5a261cc9d8c3)
 
-- Homepage with code input
-- Analysis results with charts
-- History page for past executions
+
+
+
+
+
 
 ## ⚠️ Disclaimer
 
