@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Store report data for JavaScript access -->
+<div id="report-data" data-report="{{ report|tojson }}"></div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Sandbox
+        </a>
+    </div>
+    
+    <div class="col-12">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-dark">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>SnakeCage Analysis Report</h3>
+                    <span class="badge bg-{{ 'danger' if report.risk_level == 'high' else 'warning' if report.risk_level == 'medium' else 'info' }} fs-6">
+                        Risk: {{ report.risk_level|upper }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-dark text-center p-3">
+                            <div id="riskScore">
+                                <h2 class="risk-{{ report.risk_level }}">{{ report.risk_score }}/100</h2>
+                                <p class="mb-0">Risk Level: <span class="risk-{{ report.risk_level }} fw-bold">{{ report.risk_level|upper }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-dark text-center p-3">
+                            <div id="executionTime">
+                                <h4>{{ "%.2f"|format(report.execution.execution_time) }}s</h4>
+                                <p class="mb-0">Execution Time</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-dark text-center p-3">
+                            <div id="suspiciousActivities">
+                                <h4>{{ report.suspicious_activities|length }}</h4>
+                                <p class="mb-0">Suspicious Activities</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-dark text-center p-3">
+                            <div id="importedModules">
+                                <h4>{{ report.sandbox_results.imported_modules|length }}</h4>
+                                <p class="mb-0">Imported Modules</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-{{ 'danger' if report.risk_level == 'high' else 'warning' if report.risk_level == 'medium' else 'info' }}">
+                            <h5><i class="fas fa-exclamation-circle me-2"></i>Summary</h5>
+                            <p class="mb-0">{{ report.summary|replace('\n', '<br>')|safe }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Suspicious Activities</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline" id="activityTimeline">
+                            {% if report.suspicious_activities %}
+                                {% for activity in report.suspicious_activities %}
+                                <div class="timeline-item">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge severity-{{ activity.severity }} me-2">{{ activity.severity|upper }}</span>
+                                        <h5 class="mb-0">{{ activity.type|replace('_', ' ')|title }}</h5>
+                                    </div>
+                                    <p>{{ activity.description }}</p>
+                                    {% if activity.module %}
+                                    <small class="text-muted">Module: {{ activity.module }}</small>
+                                    {% endif %}
+                                    {% if activity.function %}
+                                    <small class="text-muted">Function: {{ activity.function }}</small>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert alert-info">No suspicious activities detected</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-code me-2"></i>Analyzed Code</h4>
+                    </div>
+                    <div class="card-body">
+                        <pre class="mb-0 p-3 bg-dark text-light rounded" style="max-height: 400px; overflow-y: auto;"><code>{{ report.code }}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Resource Monitoring</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h5>CPU Usage</h5>
+                                <div class="chart-container">
+                                    <canvas id="cpuChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h5>Memory Usage</h5>
+                                <div class="chart-container">
+                                    <canvas id="memoryChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <h5>Network Activity</h5>
+                                <div class="chart-container">
+                                    <canvas id="networkChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-terminal me-2"></i>Execution Output</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5>Standard Output (stdout)</h5>
+                            <pre id="stdout" class="output-box">{{ report.sandbox_results.stdout or 'No output' }}</pre>
+                        </div>
+                        <div>
+                            <h5>Standard Error (stderr)</h5>
+                            <pre id="stderr" class="output-box">{{ report.sandbox_results.stderr or 'No errors' }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Execution Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5>Imported Modules</h5>
+                            <div>
+                                {% if report.sandbox_results.imported_modules %}
+                                    {% for module in report.sandbox_results.imported_modules %}
+                                        <span class="activity-badge bg-secondary">{{ module }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted">No modules imported</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>File System Activity</h5>
+                            {% if report.sandbox_results.filesystem_activity.created or 
+                                  report.sandbox_results.filesystem_activity.modified or 
+                                  report.sandbox_results.filesystem_activity.accessed %}
+                                <div class="mb-2">
+                                    <h6>Created Files</h6>
+                                    {% if report.sandbox_results.filesystem_activity.created %}
+                                        <ul class="list-group">
+                                            {% for file in report.sandbox_results.filesystem_activity.created %}
+                                                <li class="list-group-item bg-dark border-0">{{ file }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="text-muted">No files created</p>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <h6>Modified Files</h6>
+                                    {% if report.sandbox_results.filesystem_activity.modified %}
+                                        <ul class="list-group">
+                                            {% for file in report.sandbox_results.filesystem_activity.modified %}
+                                                <li class="list-group-item bg-dark border-0">{{ file }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="text-muted">No files modified</p>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">No file system activity detected</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <h5>Execution Status</h5>
+                            <p>
+                                {% if report.execution.success %}
+                                    <span class="badge bg-success">Success</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Failed</span>
+                                {% endif %}
+                                
+                                {% if report.execution.timed_out %}
+                                    <span class="badge bg-warning">Timed Out</span>
+                                {% endif %}
+                                
+                                <span class="ms-2">Total Time: {{ "%.2f"|format(report.execution.total_time) }}s</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-shield-alt me-2"></i>Security Recommendations</h4>
+                    </div>
+                    <div class="card-body" id="recommendations">
+                        {% if report.recommendations %}
+                            {% for rec in report.recommendations %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ rec.title }}</h5>
+                                        <p class="card-text">{{ rec.description }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No specific recommendations available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
